@@ -1,7 +1,13 @@
 #include <stdio.h>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 void solve_tridiagonal(long double * restrict const x, const int X, const long double * restrict const a, const long double * restrict const b, long double * restrict const c) {
+=======
+#include <stdlib.h>
+
+void solve_tridiagonal(double * restrict const x, const int X, const double * restrict const a, const double * restrict const b, double * restrict const c) {
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
 =======
 #include <stdlib.h>
 
@@ -20,6 +26,7 @@ void solve_tridiagonal(double * restrict const x, const int X, const double * re
      */
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     c[0] = c[0] / b[0];
     x[0] = x[0] / b[0];
     
@@ -27,6 +34,8 @@ void solve_tridiagonal(double * restrict const x, const int X, const double * re
     for (int ix = 1; ix < X; ix++) {
         const long double m = 1.0f / (b[ix] - a[ix] * c[ix - 1]);
 =======
+=======
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
     
 
     c[0] = c[0] / b[0];
@@ -37,6 +46,9 @@ void solve_tridiagonal(double * restrict const x, const int X, const double * re
     /* loop from 1 to X - 1 inclusive, performing the forward sweep */
     for (int ix = 1; ix < X; ix++) {
         const double m = 1.0f / (b[ix] - a[ix] * c[ix - 1]);
+<<<<<<< HEAD
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
+=======
 >>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
         c[ix] = c[ix] * m;
         x[ix] = (x[ix] - a[ix] * x[ix - 1]) * m;
@@ -47,6 +59,7 @@ void solve_tridiagonal(double * restrict const x, const int X, const double * re
         x[ix] -= c[ix] * x[ix + 1];
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 const long double A = 1;
 const long double B = 3;
@@ -72,6 +85,8 @@ long double av[Nx-2]; long double bv[Nx-2]; long double cv[Nx-2];
 au[0] = 0.; av[0] = 0.;
 for(int i=1; i<Nx-2; i++){
 =======
+=======
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
 const double A = 1;
 const double B = 1;
 const double Du = 1;
@@ -98,6 +113,9 @@ au[Nx-3] = -2*ru;
 av[Nx-3] = -2*rv;
 
 for(int i=1; i<Nx-3; i++){
+<<<<<<< HEAD
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
+=======
 >>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
 	av[i] = -rv;
 	au[i] = -ru;
@@ -107,24 +125,35 @@ for(int i=0; i<Nx-2; i++){
 	bv[i] = 1+2*rv;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 cu[Nx-2] = 0.;
 cv[Nx-2] = 0.;
 for(int i=0; i<Nx-3; i++){
 =======
+=======
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
 
 cu[Nx-3] = 0.;
 cv[Nx-3] = 0.;
 cu[0] = -2*ru;
 cv[0] = -2*rv;
 for(int i=1; i<Nx-3; i++){
+<<<<<<< HEAD
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
+=======
 >>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
 	cv[i] = -rv;
 	cu[i] = -ru;
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 long double fu[Nt][Nx]; 
 long double fv[Nt][Nx];
+=======
+double fu[Nt+1][Nx+1]; 
+double fv[Nt+1][Nx+1];
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
 =======
 double fu[Nt+1][Nx+1]; 
 double fv[Nt+1][Nx+1];
@@ -139,6 +168,7 @@ for(int j = 0; j < Nt; j++){
                                                                                               
 for(int i = 0; i < Nx; i++){
 <<<<<<< HEAD
+<<<<<<< HEAD
 	fv[0][i] = B/A;
 	fu[0][i] = A;
 }
@@ -146,12 +176,17 @@ for(int i = 0; i < Nx; i++){
 long double urightpart[Nx-2];
 long double vrightpart[Nx-2];
 =======
+=======
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
 	fv[0][i] = B/A + 0.005*(rand()%100); 
 	fu[0][i] = A + 0.005*(rand()%100);
 }
 
 double urightpart[Nx-2];
 double vrightpart[Nx-2];
+<<<<<<< HEAD
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
+=======
 >>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
 
 for(int j = 1; j < Nt; j++){
@@ -159,6 +194,7 @@ for(int j = 1; j < Nt; j++){
 		urightpart[i] = (1-tau*(B+1)-2*ru)*fu[j-1][i] + ru*(fu[j-1][i-1] + fu[j-1][i+1]) + tau*fu[j-1][i]*fu[j-1][i]*fv[j-1][i] + tau*A; 
 		vrightpart[i] = (1 -2*rv)*fv[j-1][i] + tau*B*fu[j-1][i] - tau*fu[j-1][i]*fu[j-1][i]*fv[j-1][i];
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 //	if(j == 3) for(int i=1; i < Nx-1; i++){ printf("%f ",urightpart[i]); }
 	solve_tridiagonal(urightpart, Nx-2, au, bu, cu);
@@ -169,10 +205,16 @@ for(int j = 1; j < Nt; j++){
 	solve_tridiagonal(urightpart, Nx-2, au, bu, cu);
 	solve_tridiagonal(vrightpart, Nx-2, av, bv, cv);
 >>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
+=======
+
+	solve_tridiagonal(urightpart, Nx-2, au, bu, cu);
+	solve_tridiagonal(vrightpart, Nx-2, av, bv, cv);
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
 	for(int i = 1; i < Nx-1; i++){
 		fu[j][i] = urightpart[i];
 		fv[j][i] = vrightpart[i];
 	}
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 	fu[j][0] = fu[j][1];
@@ -187,6 +229,8 @@ for(int j = 1; j < Nt; j++){
 	fv[j][0] = fv[j-1][0] + tau*(-fu[j-1][0]*fu[j-1][0]*fv[j-1][0] + B*fu[j-1][0] + 2*Dv/h/h*(fv[j-1][1] - fv[j-1][0]));
 	fv[j][Nx-1] = fv[j-1][Nx-1] + tau*(-fu[j-1][Nx-1]*fu[j-1][Nx-1]*fv[j-1][Nx-1] + B*fu[j-1][Nx-1] + 2*Dv/h/h*(fv[j-1][Nx-2] - fv[j-1][Nx-1]));*/
 =======
+=======
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
 	
 	fu[j][0] = fu[j][3];
 	fu[j][Nx-1] = fu[j][Nx-3];
@@ -198,6 +242,9 @@ for(int j = 1; j < Nt; j++){
 	fu[j][Nx-1] = fu[j-1][Nx-1];// + tau*(A + fu[j][Nx-1]*fu[j][Nx-1]*fv[j][Nx-1] - (B+1)*fu[j][Nx-1] + 2*Du/h/h*(fu[j][Nx-2] - fu[j][Nx-1]));
 	fv[j][0] = fv[j-1][0];// + tau*(-fu[j][0]*fu[j][0]*fv[j][0] + B*fu[j][0] + 2*Dv/h/h*(fv[j][1] - fv[j][0]));
 	fv[j][Nx-1] = fv[j-1][Nx-1];// + tau*(-fu[j][Nx-1]*fu[j][Nx-1]*fv[j][Nx-1] + B*fu[j][Nx-1] + 2*Dv/h/h*(fv[j][Nx-2] - fv[j][Nx-1]));*/
+<<<<<<< HEAD
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
+=======
 >>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
 }	
 
@@ -206,7 +253,11 @@ fp = fopen("brus.dat", "w");
 for(int j = 0; j < Nt; j++){
 	for(int i = 0; i < Nx; i++){
 <<<<<<< HEAD
+<<<<<<< HEAD
 		fprintf(fp, "%Lf %Lf %Lf %Lf \n", j*tau, i*h, fu[j][i], fv[j][i]);
+=======
+		fprintf(fp, "%f %f %f %f \n", j*tau, i*h, fu[j][i], fv[j][i]);
+>>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
 =======
 		fprintf(fp, "%f %f %f %f \n", j*tau, i*h, fu[j][i], fv[j][i]);
 >>>>>>> 7f6558bb99eb5707235d5375453cadfdbdd32664
