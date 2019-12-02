@@ -52,27 +52,26 @@ int Nt = (T - t0) / tau;
 double ru = Du*tau/2/h/h;
 double rv = Dv*tau/2/h/h;
 
-double au[Nx-1]; double bu[Nx-1]; double cu[Nx-1];
-double av[Nx-1]; double bv[Nx-1]; double cv[Nx-1];
-
+double au[Nx-2]; double bu[Nx-2]; double cu[Nx-2];
+double av[Nx-2]; double bv[Nx-2]; double cv[Nx-2];
 au[0] = 0.; av[0] = 0.;
-au[Nx-2] = -2*ru;
-av[Nx-2] = -2*rv;
+au[Nx-3] = -2*ru;
+av[Nx-3] = -2*rv;
 
-for(int i=1; i<Nx-2; i++){
+for(int i=1; i<Nx-3; i++){
 	av[i] = -rv;
 	au[i] = -ru;
 }
-for(int i=0; i<Nx; i++){
+for(int i=0; i<Nx-2; i++){
 	bu[i] = 1+2*ru;
 	bv[i] = 1+2*rv;
 }
 
-cu[Nx-2] = 0.;
-cv[Nx-2] = 0.;
+cu[Nx-3] = 0.;
+cv[Nx-3] = 0.;
 cu[0] = -2*ru;
 cv[0] = -2*rv;
-for(int i=1; i<Nx-2; i++){
+for(int i=1; i<Nx-3; i++){
 	cv[i] = -rv;
 	cu[i] = -ru;
 }
@@ -130,41 +129,6 @@ for(int j = 0; j < Nt; j++){
 fclose(fp);
 return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
