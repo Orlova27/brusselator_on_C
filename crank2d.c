@@ -97,16 +97,16 @@ double vrightpart[Nx+1];
 	
 	
 
-for(int j = 1; j < Nt; j++){
+for(int j = 1; j <= Nt; j++){
 
-	urightpart[0] = fu[j-1][0] + 2*ru*(fu[j-1][1] - fu[j-1][0]) + tau*(A + fu[j-1][0]*fu[j-1][0]*fv[j-1][0] - (B+1)*fu[j-1][0]);
-	vrightpart[0] = fv[j-1][0] + 2*rv*(fv[j-1][1] - fv[j-1][0]) + tau*(-fu[j-1][0]*fu[j-1][0]*fv[j-1][0] + B*fu[j-1][0]);
- 	urightpart[Nx] = fu[j-1][Nx] + 2*ru*(fu[j-1][Nx-1] - fu[j-1][Nx]) + tau*(A + fu[j-1][Nx]*fu[j-1][Nx]*fv[j-1][Nx] - (B+1)*fu[j-1][Nx]);
-	vrightpart[Nx] = fv[j-1][Nx] + 2*rv*(fv[j-1][Nx-1] - fv[j-1][Nx]) + tau*(-fu[j-1][Nx]*fu[j-1][Nx]*fv[j-1][Nx] + B*fu[j-1][Nx]);
+	urightpart[0] = fu[j-1][0] + 2*ru*(fu[j-1][1] - fu[j-1][0]) + tau*(A /*+ fu[j-1][0]*fu[j-1][0]*fv[j-1][0] */ - (B+1)*fu[j-1][0]);
+	vrightpart[0] = fv[j-1][0] + 2*rv*(fv[j-1][1] - fv[j-1][0]) + tau*(/*-fu[j-1][0]*fu[j-1][0]*fv[j-1][0] + */B*fu[j-1][0]);
+ 	urightpart[Nx] = fu[j-1][Nx] + 2*ru*(fu[j-1][Nx-1] - fu[j-1][Nx]) + tau*(A /*+ fu[j-1][Nx]*fu[j-1][Nx]*fv[j-1][Nx] */- (B+1)*fu[j-1][Nx]);
+	vrightpart[Nx] = fv[j-1][Nx] + 2*rv*(fv[j-1][Nx-1] - fv[j-1][Nx]) + tau*(/*-fu[j-1][Nx]*fu[j-1][Nx]*fv[j-1][Nx] +*/ B*fu[j-1][Nx]);
 
 	for(int i = 1; i < Nx; i++){
-		urightpart[i] = fu[j-1][i]+ru*(fu[j-1][i+1] + 2*fu[j-1][i] + fu[j-1][i-1]) + tau*(A + fu[j-1][i]*fu[j-1][i]*fv[j-1][i] - (B+1)*fu[j-1][i]); 
-		vrightpart[i] = fv[j-1][i]+rv*(fv[j-1][i+1] + 2*fv[j-1][i] + fv[j-1][i-1]) + tau*(-fu[j-1][i]*fu[j-1][i]*fv[j-1][i] + B*fu[j-1][i]);
+		urightpart[i] = fu[j-1][i]+ru*(fu[j-1][i+1] + 2*fu[j-1][i] + fu[j-1][i-1]) + tau*(A /*+ fu[j-1][i]*fu[j-1][i]*fv[j-1][i]*/ - (B+1)*fu[j-1][i]); 
+		vrightpart[i] = fv[j-1][i]+rv*(fv[j-1][i+1] + 2*fv[j-1][i] + fv[j-1][i-1]) + tau*(/*-fu[j-1][i]*fu[j-1][i]*fv[j-1][i] +*/ B*fu[j-1][i]);
 	}
 
 	solve_tridiagonal(urightpart, Nx+1, au, bu, cu);
