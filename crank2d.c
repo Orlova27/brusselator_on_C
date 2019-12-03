@@ -52,26 +52,26 @@ int Nt = (T - t0) / tau;
 double ru = Du*tau/2/h/h;
 double rv = Dv*tau/2/h/h;
 
-double au[Nx-2]; double bu[Nx-2]; double cu[Nx-2];
-double av[Nx-2]; double bv[Nx-2]; double cv[Nx-2];
+double au[Nx+1]; double bu[Nx+1]; double cu[Nx+1];
+double av[Nx+1]; double bv[Nx+1]; double cv[Nx+1];
 au[0] = 0.; av[0] = 0.;
-au[Nx-3] = -2*ru;
-av[Nx-3] = -2*rv;
+au[Nx] = -2*ru;
+av[Nx] = -2*rv;
 
-for(int i=1; i<Nx-3; i++){
+for(int i=1; i<Nx; i++){
 	av[i] = -rv;
 	au[i] = -ru;
 }
-for(int i=0; i<Nx-2; i++){
+for(int i=0; i<=Nx; i++){
 	bu[i] = 1+2*ru;
 	bv[i] = 1+2*rv;
 }
 
-cu[Nx-3] = 0.;
-cv[Nx-3] = 0.;
+cu[Nx] = 0.;
+cv[Nx] = 0.;
 cu[0] = -2*ru;
 cv[0] = -2*rv;
-for(int i=1; i<Nx-3; i++){
+for(int i=1; i<Nx; i++){
 	cv[i] = -rv;
 	cu[i] = -ru;
 }
@@ -79,38 +79,48 @@ for(int i=1; i<Nx-3; i++){
 double fu[Nt+1][Nx+1]; 
 double fv[Nt+1][Nx+1];
 
-for(int j = 0; j < Nt; j++){
-	for(int i = 0; i < Nx; i++){
+for(int j = 0; j <= Nt; j++){
+	for(int i = 0; i <= Nx; i++){
 		fu[j][i] = 0.;
 		fv[j][i] = 0.;
 	}
 }
-                                                                                              
-for(int i = 0; i < Nx; i++){
-	fv[0][i] = B/A + 0.005*(rand()%100); 
-	fu[0][i] = A + 0.005*(rand()%100);
+    double noiseu = 0.005*(rand()%100);    
+    double noisev = 0.005*(rand()%100);                                                                             
+for(int i = 0; i <= Nx; i++){
+	fv[0][i] = B/A + noisev; 
+	fu[0][i] = A + noiseu;
 }
 
-double urightpart[Nx-2];
-double vrightpart[Nx-2];
+double urightpart[Nx+1];
+double vrightpart[Nx+1];
+	
+	
 
 for(int j = 1; j < Nt; j++){
-	for(int i = 1; i < Nx-1; i++){
-		urightpart[i] = (1-tau*(B+1)-2*ru)*fu[j-1][i] + ru*(fu[j-1][i-1] + fu[j-1][i+1]) + tau*fu[j-1][i]*fu[j-1][i]*fv[j-1][i] + tau*A; 
-		vrightpart[i] = (1 -2*rv)*fv[j-1][i] + tau*B*fu[j-1][i] - tau*fu[j-1][i]*fu[j-1][i]*fv[j-1][i];
+
+	urightpart[0] = fu[j-1][0] + 2*ru*(fu[j-1][1] - fu[j-1][0]) + tau*(A + fu[j-1][0]*fu[j-1][0]*fv[j-1][0] - (B+1)*fu[j-1][0]);
+	vrightpart[0] = fv[j-1][0] + 2*rv*(fv[j-1][1] - fv[j-1][0]) + tau*(-fu[j-1][0]*fu[j-1][0]*fv[j-1][0] + B*fu[j-1][0]);
+ 	urightpart[Nx] = fu[j-1][Nx] + 2*ru*(fu[j-1][Nx-1] - fu[j-1][Nx]) + tau*(A + fu[j-1][Nx]*fu[j-1][Nx]*fv[j-1][Nx] - (B+1)*fu[j-1][Nx]);
+	vrightpart[Nx] = fv[j-1][Nx] + 2*rv*(fv[j-1][Nx-1] - fv[j-1][Nx]) + tau*(-fu[j-1][Nx]*fu[j-1][Nx]*fv[j-1][Nx] + B*fu[j-1][Nx]);
+
+	for(int i = 1; i < Nx; i++){
+		urightpart[i] = fu[j-1][i]+ru*(fu[j-1][i+1] + 2*fu[j-1][i] + fu[j-1][i-1]) + tau*(A + fu[j-1][i]*fu[j-1][i]*fv[j-1][i] - (B+1)*fu[j-1][i]); 
+		vrightpart[i] = fv[j-1][i]+rv*(fv[j-1][i+1] + 2*fv[j-1][i] + fv[j-1][i-1]) + tau*(-fu[j-1][i]*fu[j-1][i]*fv[j-1][i] + B*fu[j-1][i]);
 	}
 
-	solve_tridiagonal(urightpart, Nx-2, au, bu, cu);
-	solve_tridiagonal(vrightpart, Nx-2, av, bv, cv);
-	for(int i = 1; i < Nx-1; i++){
+	solve_tridiagonal(urightpart, Nx+1, au, bu, cu);
+	solve_tridiagonal(vrightpart, Nx+1, av, bv, cv);
+	for(int i = 0; i < Nx+1; i++){
 		fu[j][i] = urightpart[i];
 		fv[j][i] = vrightpart[i];
 	}
 	
+	/*
 	fu[j][0] = fu[j][3];
 	fu[j][Nx-1] = fu[j][Nx-3];
 	fv[j][0] = fv[j][3];
-	fv[j][Nx-1] = fv[j][Nx-2];
+	fv[j][Nx-1] = fv[j][Nx-2];*/
 
 /*
 	fu[j][0] = fu[j-1][0];// + tau*(A + fu[j][0]*fu[j][0]*fv[j][0]- (B+1)*fu[j][0] + 2*Du/h/h*(fu[j][1] - fu[j][0]));
@@ -121,8 +131,8 @@ for(int j = 1; j < Nt; j++){
 
 FILE* fp;
 fp = fopen("brus.dat", "w");
-for(int j = 0; j < Nt; j++){
-	for(int i = 0; i < Nx; i++){
+for(int j = 0; j <= Nt; j++){
+	for(int i = 0; i <= Nx; i++){
 		fprintf(fp, "%f %f %f %f \n", j*tau, i*h, fu[j][i], fv[j][i]);
 	}
 }
