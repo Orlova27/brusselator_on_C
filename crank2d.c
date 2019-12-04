@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define mpi 3.1415926
+
 void solve_tridiagonal(double * restrict const x, const int X, const double * restrict const a, const double * restrict const b, double * restrict const c) {
     /*
      solves Ax = v where A is a tridiagonal matrix consisting of vectors a, b, c
@@ -34,18 +36,18 @@ void solve_tridiagonal(double * restrict const x, const int X, const double * re
 }
 
 const double A = 1;
-const double B = 1.5;
+const double B = 3;
 const double Du = 1;
 const double Dv = 100;
                                                                                                                                                                                                                                                                                                                                                        
 int main(){
 
 double a = 0;
-double b = 1;
+double b = 10;
 double T = 1;
 double t0 = 0;
-double h = 0.01;
-double tau = 0.01;
+double h = mpi/5;
+double tau = 0.0001;
 int Nx = (b - a) / h;
 int Nt = (T - t0) / tau;
 
@@ -101,12 +103,12 @@ for(int j = 1; j <= Nt; j++){
 
 	urightpart[0] = fu[j-1][0] + 2*ru*(fu[j-1][1] - fu[j-1][0]) + tau*(A + fu[j-1][0]*fu[j-1][0]*fv[j-1][0]  - (B+1)*fu[j-1][0]);
 	vrightpart[0] = fv[j-1][0] + 2*rv*(fv[j-1][1] - fv[j-1][0]) + tau*(-fu[j-1][0]*fu[j-1][0]*fv[j-1][0] + B*fu[j-1][0]);
- 	urightpart[Nx] = fu[j-1][Nx] + 2*ru*(fu[j-1][Nx-1] - fu[j-1][Nx]) + tau*(A + fu[j-1][Nx]*fu[j-1][Nx]*fv[j-1][Nx] - (B+1)*fu[j-1][Nx]);
+ 	urightpart[Nx] = fu[j-1][Nx] + 2*ru*(fu[j-1][Nx-1] - fu[j-1][Nx]) +  tau*(A + fu[j-1][Nx]*fu[j-1][Nx]*fv[j-1][Nx] - (B+1)*fu[j-1][Nx]);
 	vrightpart[Nx] = fv[j-1][Nx] + 2*rv*(fv[j-1][Nx-1] - fv[j-1][Nx]) + tau*(-fu[j-1][Nx]*fu[j-1][Nx]*fv[j-1][Nx] + B*fu[j-1][Nx]);
 
 	for(int i = 1; i < Nx; i++){
-		urightpart[i] = fu[j-1][i]+ru*(fu[j-1][i+1] + 2*fu[j-1][i] + fu[j-1][i-1]) + tau*(A + fu[j-1][i]*fu[j-1][i]*fv[j-1][i] - (B+1)*fu[j-1][i]); 
-		vrightpart[i] = fv[j-1][i]+rv*(fv[j-1][i+1] + 2*fv[j-1][i] + fv[j-1][i-1]) + tau*(-fu[j-1][i]*fu[j-1][i]*fv[j-1][i] + B*fu[j-1][i]);
+		urightpart[i] = fu[j-1][i]+ru*(fu[j-1][i+1] - 2*fu[j-1][i] + fu[j-1][i-1]) + tau*(A + fu[j-1][i]*fu[j-1][i]*fv[j-1][i] - (B+1)*fu[j-1][i]); 
+		vrightpart[i] = fv[j-1][i]+rv*(fv[j-1][i+1] - 2*fv[j-1][i] + fv[j-1][i-1]) + tau*(-fu[j-1][i]*fu[j-1][i]*fv[j-1][i] + B*fu[j-1][i]);
 	}
 
 	solve_tridiagonal(urightpart, Nx+1, au, bu, cu);
@@ -115,12 +117,6 @@ for(int j = 1; j <= Nt; j++){
 		fu[j][i] = urightpart[i];
 		fv[j][i] = vrightpart[i];
 	}
-	
-	/*
-	fu[j][0] = fu[j][3];
-	fu[j][Nx-1] = fu[j][Nx-3];
-	fv[j][0] = fv[j][3];
-	fv[j][Nx-1] = fv[j][Nx-2];*/
 
 /*
 	fu[j][0] = fu[j-1][0];// + tau*(A + fu[j][0]*fu[j][0]*fv[j][0]- (B+1)*fu[j][0] + 2*Du/h/h*(fu[j][1] - fu[j][0]));
