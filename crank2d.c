@@ -36,18 +36,18 @@ void solve_tridiagonal(double * restrict const x, const int X, const double * re
 }
 
 const double A = 1;
-const double B = 3;
+const double B = 2.5;
 const double Du = 1;
 const double Dv = 100;
                                                                                                                                                                                                                                                                                                                                                        
 int main(){
 
 double a = 0;
-double b = 10;
+double b = 100;
 double T = 1;
 double t0 = 0;
-double h = mpi/5;
-double tau = 0.0001;
+double h = 2.65;
+double tau = 0.01;
 int Nx = (b - a) / h;
 int Nt = (T - t0) / tau;
 
