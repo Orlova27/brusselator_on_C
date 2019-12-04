@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 const float A = 1;
 const float B = 1;
@@ -22,6 +23,12 @@ float rv = Dv*tau/2/h/h;
 
 float fu[Nt+1][Nx+1]; 
 float fv[Nt+1][Nx+1];
+int stime;
+long ltime;
+
+ltime = time (NULL);
+stime = (unsigned int) ltime/2;
+srand(stime);
 
 for(int j = 0; j < Nt; j++){
 	for(int i = 0; i < Nx; i++){
@@ -29,12 +36,10 @@ for(int j = 0; j < Nt; j++){
 		fv[j][i] = 0.;
 	}
 }
-                                                                                              
-    double noiseu = 0.005*(rand()%100);    
-    double noisev = 0.005*(rand()%100);                                                                             
+                                                                     
 for(int i = 0; i <= Nx; i++){
-	fv[0][i] = B/A + noisev; 
-	fu[0][i] = A + noiseu;
+	fv[0][i] = B/A + 0.005*(rand()%100); 
+	fu[0][i] = A + 0.005*(rand()%100);
 }
 
 
