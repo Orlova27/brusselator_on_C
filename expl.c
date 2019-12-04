@@ -10,8 +10,8 @@ const float Dv = 100;
 int main(){
 
 float a = 0;
-float b = 1;
-float T = 1;
+float b = 100;
+float T = 100;
 float t0 = 0;
 float h = 0.01;
 float tau = 0.01;
@@ -36,17 +36,18 @@ for(int j = 0; j < Nt; j++){
 		fv[j][i] = 0.;
 	}
 }
-                                                                     
+     float noiseu = 0.005*(rand()%100);
+     float noisev = 0.005*(rand()%100);                                                                
 for(int i = 0; i <= Nx; i++){
-	fv[0][i] = B/A + 0.005*(rand()%100); 
-	fu[0][i] = A + 0.005*(rand()%100);
+	fv[0][i] = B/A + noisev; 
+	fu[0][i] = A + noiseu;
 }
 
 
 for(int j = 1; j <= Nt; j++){
 for(int i = 1; i <Nx; i++){
-	fu[j][i] = fu[j-1][i] + tau*(A+fu[j-1][i]*fu[j-1][i]*fv[j-1][i] - (B+1)*fu[j-1][i] + Du/h/h*(fu[j-1][i+1]+fu[j-1][i-1]-2*fu[j-1][i]));
-	fv[j][i] = fv[j-1][i] + tau*(-fu[j-1][i]*fu[j-1][i]*fv[j-1][i] + B*fu[j-1][i] + Dv/h/h*(fv[j-1][i+1]+fv[j-1][i-1]-2*fv[j-1][i]));
+	fu[j][i] = fu[j-1][i] + tau*(A+fu[j-1][i]*fu[j-1][i]*fv[j-1][i] - (B+1)*fu[j-1][i] /* + Du/h/h*(fu[j-1][i+1]+fu[j-1][i-1]-2*fu[j-1][i])*/);
+	fv[j][i] = fv[j-1][i] + tau*(-fu[j-1][i]*fu[j-1][i]*fv[j-1][i] + B*fu[j-1][i] /*+ Dv/h/h*(fv[j-1][i+1]+fv[j-1][i-1]-2*fv[j-1][i])*/);
 }
 	fu[j][0] = fu[j][1];
 	fv[j][0] = fv[j][1];
@@ -55,7 +56,7 @@ for(int i = 1; i <Nx; i++){
 }
 
 FILE* fp;
-fp = fopen("brus.dat", "w");
+fp = fopen("brus1.dat", "w");
 for(int j = 0; j <= Nt; j++){
 	for(int i = 0; i <= Nx; i++){
 		fprintf(fp, "%f %f %f %f \n", j*tau, i*h, fu[j][i], fv[j][i]);
