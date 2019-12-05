@@ -10,11 +10,11 @@ const float Dv = 100;
 int main(){
 
 float a = 0;
-float b = 100;
-float T = 100;
+float b = 182;
+float T = 1;
 float t0 = 0;
-float h = 0.01;
-float tau = 0.01;
+float h = 0.6;
+float tau = 0.001;
 int Nx = (b - a) / h;
 int Nt = (T - t0) / tau;
 
@@ -56,7 +56,7 @@ for(int i = 1; i <Nx; i++){
 }
 
 FILE* fp;
-fp = fopen("brus1.dat", "w");
+fp = fopen("bruseplb1.dat", "w");
 for(int j = 0; j <= Nt; j++){
 	for(int i = 0; i <= Nx; i++){
 		fprintf(fp, "%f %f %f %f \n", j*tau, i*h, fu[j][i], fv[j][i]);

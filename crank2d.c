@@ -3,7 +3,7 @@
 
 #define mpi 3.1415926
 
-void solve_tridiagonal(double * restrict const x, const int X, const double * restrict const a, const double * restrict const b, double * restrict const c) {
+void solve_tridiagonal(float * restrict const x, const int X, const float * restrict const a, const float * restrict const b, float * restrict const c) {
     /*
      solves Ax = v where A is a tridiagonal matrix consisting of vectors a, b, c
      x - initially contains the input vector v, and returns the solution x. indexed from 0 to X - 1 inclusive
@@ -25,7 +25,7 @@ void solve_tridiagonal(double * restrict const x, const int X, const double * re
 
     /* loop from 1 to X - 1 inclusive, performing the forward sweep */
     for (int ix = 1; ix < X; ix++) {
-        const double m = 1.0f / (b[ix] - a[ix] * c[ix - 1]);
+        const float m = 1.0f / (b[ix] - a[ix] * c[ix - 1]);
         c[ix] = c[ix] * m;
         x[ix] = (x[ix] - a[ix] * x[ix - 1]) * m;
     }
@@ -35,27 +35,27 @@ void solve_tridiagonal(double * restrict const x, const int X, const double * re
         x[ix] -= c[ix] * x[ix + 1];
 }
 
-const double A = 1;
-const double B = 2.5;
-const double Du = 1;
-const double Dv = 100;
+const float A = 1;
+const float B = 1.5;
+const float Du = 1;
+const float Dv = 100;
                                                                                                                                                                                                                                                                                                                                                        
 int main(){
 
-double a = 0;
-double b = 100;
-double T = 1;
-double t0 = 0;
-double h = 2.65;
-double tau = 0.01;
+float a = 0;
+float b = 10;
+float T = 1;
+float t0 = 0;
+float h = 1.0;
+float tau = 0.004;
 int Nx = (b - a) / h;
 int Nt = (T - t0) / tau;
 
-double ru = Du*tau/2/h/h;
-double rv = Dv*tau/2/h/h;
+float ru = Du*tau/2/h/h;
+float rv = Dv*tau/2/h/h;
 
-double au[Nx+1]; double bu[Nx+1]; double cu[Nx+1];
-double av[Nx+1]; double bv[Nx+1]; double cv[Nx+1];
+float au[Nx+1]; float bu[Nx+1]; float cu[Nx+1];
+float av[Nx+1]; float bv[Nx+1]; float cv[Nx+1];
 au[0] = 0.; av[0] = 0.;
 au[Nx] = -2*ru;
 av[Nx] = -2*rv;
@@ -78,8 +78,8 @@ for(int i=1; i<Nx; i++){
 	cu[i] = -ru;
 }
 
-double fu[Nt+1][Nx+1]; 
-double fv[Nt+1][Nx+1];
+float fu[Nt+1][Nx+1]; 
+float fv[Nt+1][Nx+1];
 
 for(int j = 0; j <= Nt; j++){
 	for(int i = 0; i <= Nx; i++){
@@ -87,15 +87,15 @@ for(int j = 0; j <= Nt; j++){
 		fv[j][i] = 0.;
 	}
 }
-    double noiseu = 0.005*(rand()%100);    
-    double noisev = 0.005*(rand()%100);                                                                             
+    float noiseu = 0.005*(rand()%100);    
+    float noisev = 0.005*(rand()%100);                                                                             
 for(int i = 0; i <= Nx; i++){
 	fv[0][i] = B/A + noisev; 
 	fu[0][i] = A + noiseu;
 }
 
-double urightpart[Nx+1];
-double vrightpart[Nx+1];
+float urightpart[Nx+1];
+float vrightpart[Nx+1];
 	
 	
 
@@ -126,11 +126,12 @@ for(int j = 1; j <= Nt; j++){
 }	
 
 FILE* fp;
-fp = fopen("brus.dat", "w");
+fp = fopen("brus15.dat", "w");
 for(int j = 0; j <= Nt; j++){
 	for(int i = 0; i <= Nx; i++){
 		fprintf(fp, "%f %f %f %f \n", j*tau, i*h, fu[j][i], fv[j][i]);
 	}
+	fprintf(fp, "\n");
 }
 fclose(fp);
 return 0;
