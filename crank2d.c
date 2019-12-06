@@ -77,7 +77,7 @@ void solve_tridiagonal(float * restrict const x, const int X, const float * rest
 int main(){
 
 float a = 0;
-float b = 230;
+float b = 300;
 float T = 1;
 float t0 = 0;
 float h = 0.9;

@@ -17,23 +17,23 @@ float F2(float u, float v)
 
 }
 
-void runge_kutt(float h, float* u, float* v, int N)
+float runge_kutt(float h, float u, float v, int f)
 {	
-	for(int i = 0; i < N; i++)
-	{
 	float k11 = 0, k12 = 0, k13 = 0, k14 = 0;
 	float k21 = 0, k22 = 0, k23 = 0, k24 = 0;
-	k11 = h*F1(u[i], v[i]);
-	k21 = h*F2(u[i], v[i]);
-	k12 = h*F1(u[i] + k11/2, v[i] + k21/2);
-	k22 = h*F2(u[i] + k11/2, v[i] + k21/2);
-	k13 = h*F1(u[i] + k12/2, v[i] + k22/2);
-	k23 = h*F2(u[i] + k12/2, v[i] + k22/2);
-	k14 = h*F1(u[i] + k13/2, v[i] + k23/2);
-	k24 = h*F2(u[i] + k13/2, v[i] + k23/2);
-	u[i+1] = u[i] + (k11 + 2*k12 + 2*k13 + k14)/6;
-	v[i+1] = v[i] + (k21 + 2*k22 + 2*k23 + k24)/6;
-	}
+	k11 = h*F1(u, v);
+	k21 = h*F2(u, v);
+	k12 = h*F1(u + k11/2, v + k21/2);
+	k22 = h*F2(u + k11/2, v + k21/2);
+	k13 = h*F1(u + k12/2, v + k22/2);
+	k23 = h*F2(u + k12/2, v + k22/2);
+	k14 = h*F1(u + k13/2, v + k23/2);
+	k24 = h*F2(u + k13/2, v + k23/2);
+	u = u + (k11 + 2*k12 + 2*k13 + k14)/6;
+	v = v + (k21 + 2*k22 + 2*k23 + k24)/6;
+
+	if(f==1) return u;
+	if(f==2) return v;
 }
 
 
@@ -72,7 +72,7 @@ void solve_tridiagonal(float * restrict const x, const int X, const float * rest
 int main(){
 
 float a = 0;
-float b = 230;
+float b = 300;
 float T = 1;
 float t0 = 0;
 float h = 0.9;
@@ -109,9 +109,6 @@ for(int i=1; i<Nx; i++){
 
 float fu[Nt+1][Nx+1]; 
 float fv[Nt+1][Nx+1];
-float rcu[Nt+1];
-float rcv[Nt+1];
-
 
 for(int j = 0; j <= Nt; j++){
 	for(int i = 0; i <= Nx; i++){
@@ -125,8 +122,6 @@ for(int i = 0; i <= Nx; i++){
 	fv[0][i] = B/A + noisev; 
 	fu[0][i] = A + noiseu;
 }
-rcu[0] = A + noiseu;
-rcv[0] = B/A+noisev;
 
 float urightpart[Nx+1];
 float vrightpart[Nx+1];
@@ -135,18 +130,19 @@ float vrightpart[Nx+1];
 
 for(int j = 1; j <= Nt; j++){
 
-	urightpart[0] = rcu[j-1] + 2*ru*(fu[j-1][1] - fu[j-1][0]);
-	vrightpart[0] = rcv[j-1] + 2*rv*(fv[j-1][1] - fv[j-1][0]);
- 	urightpart[Nx] = rcu[j-1] + 2*ru*(fu[j-1][Nx-1] - fu[j-1][Nx]);
-	vrightpart[Nx] = rcv[j-1] + 2*rv*(fv[j-1][Nx-1] - fv[j-1][Nx]);
-
-	for(int i = 1; i <= Nx; i++){
-		runge_kutt(tau, &rcu[0], &rcv[0], Nt+1);
+	for(int i = 0; i<=Nx; i++){
+	fu[j][i] = runge_kutt(tau, fu[j-1][i], fv[j-1][i], 1);
+	fv[j][i] = runge_kutt(tau, fu[j-1][i], fv[j-1][i], 2);
 	}
 
+	urightpart[0] = fu[j][0] + 2*ru*(fu[j-1][1] - fu[j-1][0]);
+	vrightpart[0] = fv[j][0] + 2*rv*(fv[j-1][1] - fv[j-1][0]);
+ 	urightpart[Nx] = fu[j][Nx] + 2*ru*(fu[j-1][Nx-1] - fu[j-1][Nx]);
+	vrightpart[Nx] = fv[j][Nx] + 2*rv*(fv[j-1][Nx-1] - fv[j-1][Nx]);
+
 	for(int i = 1; i < Nx; i++){
-		urightpart[i] = rcu[j-1]+ru*(fu[j-1][i+1] - 2*fu[j-1][i] + fu[j-1][i-1]); 
-		vrightpart[i] = rcv[j-1]+rv*(fv[j-1][i+1] - 2*fv[j-1][i] + fv[j-1][i-1]);
+		urightpart[i] = fu[j][i]+ru*(fu[j-1][i+1] - 2*fu[j-1][i] + fu[j-1][i-1]); 
+		vrightpart[i] = fv[j][i]+rv*(fv[j-1][i+1] - 2*fv[j-1][i] + fv[j-1][i-1]);
 	}
 
 	solve_tridiagonal(urightpart, Nx+1, au, bu, cu);
