@@ -1,7 +1,46 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define mpi 3.1415926
+const float A = 1;
+const float B = 1.5;
+const float Du = 1;
+const float Dv = 100;
+                       
+float F1(float u, float v)
+{
+	return (A + u*u*v-(B+1)*u);
+}
+
+float F2(float u, float v)
+{
+	return (-u*u*v + B*u);
+
+}
+
+void runge_kutt(float h, float* u, float* v, int N)
+{	
+FILE* fp;
+fp = fopen("rungekutt.dat", "w");
+	
+	for(int i = 0; i < N; i++)
+	{
+	float k11 = 0, k12 = 0, k13 = 0, k14 = 0;
+	float k21 = 0, k22 = 0, k23 = 0, k24 = 0;
+	k11 = h*F1(u[i], v[i]);
+	k21 = h*F2(u[i], v[i]);
+	k12 = h*F1(u[i] + k11/2, v[i] + k21/2);
+	k22 = h*F2(u[i] + k11/2, v[i] + k21/2);
+	k13 = h*F1(u[i] + k12/2, v[i] + k22/2);
+	k23 = h*F2(u[i] + k12/2, v[i] + k22/2);
+	k14 = h*F1(u[i] + k13/2, v[i] + k23/2);
+	k24 = h*F2(u[i] + k13/2, v[i] + k23/2);
+	u[i+1] = u[i] + (k11 + 2*k12 + 2*k13 + k14)/6;
+	v[i+1] = v[i] + (k21 + 2*k22 + 2*k23 + k24)/6;
+	fprintf(fp, "%f, %f, %f \n", h, u[i] , v[i] );
+	}
+fclose(fp);
+}
+
 
 void solve_tridiagonal(float * restrict const x, const int X, const float * restrict const a, const float * restrict const b, float * restrict const c) {
     /*
@@ -34,12 +73,7 @@ void solve_tridiagonal(float * restrict const x, const int X, const float * rest
     for (int ix = X - 2; ix>=0 ; ix--)
         x[ix] -= c[ix] * x[ix + 1];
 }
-
-const float A = 1;
-const float B = 1.5;
-const float Du = 1;
-const float Dv = 100;
-                                                                                                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                                                                               
 int main(){
 
 float a = 0;
@@ -126,7 +160,7 @@ for(int j = 1; j <= Nt; j++){
 }	
 
 FILE* fp;
-fp = fopen("brus15final.dat", "w");
+fp = fopen("bruscrank.dat", "w");
 for(int j = 0; j <= Nt; j++){
 	for(int i = 0; i <= Nx; i++){
 		fprintf(fp, "%f %f %f %f \n", j*tau, i*h, fu[j][i], fv[j][i]);
