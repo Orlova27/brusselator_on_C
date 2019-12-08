@@ -37,46 +37,42 @@ float runge_kutt(float h, float u, float v, int f)
 }
 
 
-void solve_tridiagonal(float * restrict const x, const int X, const float * restrict const a, const float * restrict const b, float * restrict const c) {
+void solve_tridiagonal(float * x, int X, float * a, float * b, float * c, float* d) {
     /*
-     solves Ax = v where A is a tridiagonal matrix consisting of vectors a, b, c
-     x - initially contains the input vector v, and returns the solution x. indexed from 0 to X - 1 inclusive
+     solves Ax = d where A is a tridiagonal matrix consisting of vectors a, b, c
+     x - contains the input vector x indexed from 0 to X - 1 inclusive
      X - number of equations (length of vector x)
      a - subdiagonal (means it is the diagonal below the main diagonal), indexed from 1 to X - 1 inclusive
      b - the main diagonal, indexed from 0 to X - 1 inclusive
      c - superdiagonal (means it is the diagonal above the main diagonal), indexed from 0 to X - 2 inclusive
-     
-     Note: contents of input vector c will be modified, making this a one-time-use function (scratch space can be allocated instead for this purpose to make it reusable)
-     Note 2: We don't check for diagonal dominance, etc.; this is not guaranteed stable
+     d - right part of equation, indexed from 0 to X-1
      */
+     
+    float q[X];
+    float p[X];
 
+    p[0] = -c[0] / b[0];
+    q[0] = -d[0] / b[0];
     
-
-    c[0] = c[0] / b[0];
-    x[0] = x[0] / b[0];
-    
-   
-
-    /* loop from 1 to X - 1 inclusive, performing the forward sweep */
-    for (int ix = 1; ix < X; ix++) {
-        const float m = 1.0f / (b[ix] - a[ix] * c[ix - 1]);
-        c[ix] = c[ix] * m;
-        x[ix] = (x[ix] - a[ix] * x[ix - 1]) * m;
+    for (int ix = 1; ix <= X; ix++) {
+        float m = 1.0 / (-b[ix-1] - a[ix-1] * p[ix - 1]);
+        p[ix] = c[ix-1] * m;
+        q[ix] = (-d[ix-1] + a[ix-1] * q[ix - 1]) * m;
     }
+    x[X-1] = q[X];
     
-    /* loop from X - 2 to 0 inclusive (safely testing loop condition for an unsigned integer), to perform the back substitution */
     for (int ix = X - 2; ix>=0 ; ix--)
-        x[ix] -= c[ix] * x[ix + 1];
+        x[ix] = q[ix+1]+ p[ix+1] * x[ix + 1];
 }
-                                                                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                                           
 int main(){
 
 FILE* fp;
-fp = fopen("stablesmallrazd.dat", "w");
+fp = fopen("newsolver.dat", "w");
 
 float a = 0;
 float b = 182;
-float T = 100;
+float T = 20;
 float t0 = 0;
 float h = 0.6;
 float tau = 0.001;
@@ -130,6 +126,14 @@ for(int i = 0; i <= Nx; i++){
 
 float urightpart[Nx+1];
 float vrightpart[Nx+1];
+float u[Nx+1];
+float v[Nx+1];
+
+for(int i = 0; i <= Nx; i++){
+	v[i] = 0;
+	u[i] = 0;
+}
+
 
 while(count*tau<T){
 	
@@ -148,11 +152,11 @@ while(count*tau<T){
 		vrightpart[i] = fv[1][i]+rv*(fv[0][i+1] - 2*fv[0][i] + fv[0][i-1]);
 	}
 
-	solve_tridiagonal(urightpart, Nx+1, au, bu, cu);
-	solve_tridiagonal(vrightpart, Nx+1, av, bv, cv);
+	solve_tridiagonal(u, Nx+1, au, bu, cu, urightpart);
+	solve_tridiagonal(v, Nx+1, av, bv, cv, vrightpart);
 	for(int i = 0; i < Nx+1; i++){
-		fu[1][i] = urightpart[i];
-		fv[1][i] = vrightpart[i];
+		fu[1][i] = u[i];
+		fv[1][i] = v[i];
 	}
 	count++;
 	for(int i = 0; i <= Nx; i++){
