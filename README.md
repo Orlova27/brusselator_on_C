@@ -1,7 +1,8 @@
 # brusselator
-anotherversion.nb - решение распределенного случая на вольфраме, построение дисперсионной кривой с выводом \
-bdexpl.c - явная схема с большой дата \
-currentwork.nb - отстройка 3d и countourplot графиков, построение дисперсионной кривой \
-expl.c - явная схема с массивами \
-lastbigdata.c - расщепление с большой дата и пофиксенным солвером 
+In the folder main execute file brusselator.c : data will appear
+After that in gnuplot run script animator.p : gif with graps will appear
+
+Folder reports contains old versions of reports
+Folder plots contains some plots
+Folder otherversions contains some useful programms that were used in report or are replaced by latest version of code
 
