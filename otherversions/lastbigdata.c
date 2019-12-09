@@ -71,10 +71,10 @@ int main(){
 
 
 float a = 0;
-float b = 46;
-float T = 100;
+float b = 100;
+float T = 1000;
 float t0 = 0;
-float h = 0.9;
+float h = 0.1;
 float tau = 0.001;
 int Nx = (b - a) / h;
 int Nt = (T - t0) / tau;
@@ -161,11 +161,12 @@ while(count*tau<T){
 		fv[1][i] = v[i];
 	}
 	count++;
+		if(count%1000 == 0){
 		for(int i = 0; i <= Nx; i++){
 			fprintf(fp, "%f %f %f %f \n", (count-1)*tau, i*h, fu[1][i], fv[1][i]);
 		}
 		fprintf(fp, "\n");
-	
+		}
 	for(int i = 0; i <= Nx; i++){
 		fu[0][i] = fu[1][i]; 
 		fv[0][i] = fv[1][i];
