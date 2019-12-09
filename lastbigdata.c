@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h> 
 
 const float A = 1;
-const float B = 1.97;
+const float B = 1.5;
 const float Du = 1;
-const float Dv = 7;
+const float Dv = 100;
                        
 float F1(float u, float v)
 {
@@ -67,14 +68,13 @@ void solve_tridiagonal(float * x, int X, float * a, float * b, float * c, float*
                                                                                                                                                                                                                                                                                            
 int main(){
 
-FILE* fp;
-fp = fopen("newsolver.dat", "w");
+
 
 float a = 0;
-float b = 182;
-float T = 20;
+float b = 46;
+float T = 100;
 float t0 = 0;
-float h = 0.6;
+float h = 0.9;
 float tau = 0.001;
 int Nx = (b - a) / h;
 int Nt = (T - t0) / tau;
@@ -134,6 +134,8 @@ for(int i = 0; i <= Nx; i++){
 	u[i] = 0;
 }
 
+FILE* fp; 
+fp = fopen("brus.dat", "w");
 
 while(count*tau<T){
 	
@@ -159,18 +161,19 @@ while(count*tau<T){
 		fv[1][i] = v[i];
 	}
 	count++;
-	for(int i = 0; i <= Nx; i++){
-		fprintf(fp, "%f %f %f %f \n", (count-1)*tau, i*h, fu[1][i], fv[1][i]);
-	}
-	fprintf(fp, "\n");
-
+		for(int i = 0; i <= Nx; i++){
+			fprintf(fp, "%f %f %f %f \n", (count-1)*tau, i*h, fu[1][i], fv[1][i]);
+		}
+		fprintf(fp, "\n");
+	
 	for(int i = 0; i <= Nx; i++){
 		fu[0][i] = fu[1][i]; 
 		fv[0][i] = fv[1][i];
 	}
-}	
-
+}
+	
 fclose(fp);
+
 return 0;
 }
 
