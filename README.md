@@ -1,8 +1,15 @@
 # brusselator
 
-In the folder cartoon execute file brusselator.c : data will appear \
-After that in gnuplot run script animator.p : gif with graps will appear
+In the folder 1d execute file 1Dbrusselator.c : data will appear \
+After that in gnuplot run script animator.p : gif with graps will appear\
+animate.gif - example of the result of the programms
 
-Folder reports contains old versions of reports \
-Folder plots contains some plots \
-Folder otherversions contains some useful programms that were used in report or are replaced by latest version of code
+In the folder 2d execute file 2Dbrusselator.c : data will appear \
+After that in gnuplot run script animator.p : gif with graps will appear \
+a1b15T1000.gif - example of the results of the programms \
+contourplotter.p - allows to draw contourplots
+
+brusselatorreport.pdf - report about work \
+brusselatorreport.zip - zip with latex file and pictures
+
+Folder otherversions contains some useful programms that were used in report or are replaced by latest version of code.
