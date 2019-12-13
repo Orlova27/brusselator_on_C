@@ -1,5 +1,7 @@
 # brusselator
 
+If any questions or suggestions - use orlova.dr@phystech.edu
+
 In the folder 1d execute file 1Dbrusselator.c with needed A, B, Du, Dv, T, b, filename and frequency of printing datafiles: data will appear \
 After that in gnuplot run script animator.p : gif with graps will appear\
 animate.gif - example of the result of the programms
